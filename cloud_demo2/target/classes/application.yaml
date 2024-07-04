@@ -1,0 +1,69 @@
+server:
+  port: 16001
+spring:
+  application:
+    name: "consume-serve"
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: "consume-serve02"
+    #    instance-id: ${spring.cloud.client.ip-address}:
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 15
+  client:
+    service-url:
+      defaultZone: "http://eurekaServer18000:18000/eureka/,http://eurekaServer18001:18001/eureka/"
+      
+#resilience4j:
+#  circuitbreaker:
+#    configs:
+#      default:
+#        wait-duration-in-open-state: 5000 #熔断器打开时的等待时间
+#        failure-rate-threshold: 10 #失败率
+#        event-consumer-buffer-size: 5 #事件缓冲区大小
+#        automatic-transition-from-open-to-half-open-enabled: true #自动转换
+#        record-exceptions: java.lang.Exception #记录异常
+#        register-health-indicator: false #健康监测
+#        minimum-number-of-calls: 1 #触发熔断机制最小调用次数
+#        permitted-number-of-calls-in-half-open-state: 2 #半开状态下允许调用次数
+#    
+#    
+#
+#    instances:
+#      backendA:
+#        base-config: default
+#      backendB:
+#        base-config: default
+#        wait-duration-in-open-state:
+#          3000
+#        failure-rate-threshold: 15
+#resilience4j:
+#  retry:
+#    configs:
+#      default:
+#        max-attempts: 5
+#        wait-duration: 1000ms
+#        retry-exceptions:
+#          - java.lang.Exception
+#    instances:
+#      retry1:
+#        base-config: default
+#      retry2:
+#        base-config: default
+#        max-attempts: 5
+#        wait-duration: 500ms
+resilience4j:
+  ratelimiter:
+    configs:
+      default:
+        limit-for-period: 10
+        limit-refresh-period:
+          20s
+        timeout-duration: 5s
+    instances:
+      rate1 :
+        base-config: default
+      rate2 :
+        base-config: default
+        limit-for-period: 1
+          
